@@ -87,54 +87,59 @@ from optparse import OptionParser
 # Database modules
 from tvdb_api import Tvdb
 
+def main():
 # Process arguments
-parser = OptionParser(usage=u"%prog -dhiuv <seriesname>")
-parser.add_option( "-d", "--debug", action="store_true", default=False,
-                   dest="debug",
-                   help=u"Show debugging info")
-parser.add_option( "-i", "--interactive", action="store_true", default=False,
-                   dest="interactive",
-                   help=u"Activate the tvdb_api interactive mode\n(allows prompted selection from matching series")
-parser.add_option( "-u", "--usage", action="store_true", default=False,
-                   dest="usage",
-                   help=u"Display examples for executing the meta script")
-parser.add_option( "-v", "--version", action="store_true", default=False,
-                   dest="version",
-                   help=u"Display version and author")
-(opts, args) = parser.parse_args()
+    parser = OptionParser(usage=u"%prog -dhiuv <seriesname>")
+    parser.add_option( "-d", "--debug", action="store_true", default=False,
+                       dest="debug",
+                       help=u"Show debugging info")
+    parser.add_option( "-i", "--interactive", action="store_true", default=False,
+                       dest="interactive",
+                       help=u"Activate the tvdb_api interactive mode\n(allows prompted selection from matching series")
+    parser.add_option( "-u", "--usage", action="store_true", default=False,
+                       dest="usage",
+                       help=u"Display examples for executing the meta script")
+    parser.add_option( "-v", "--version", action="store_true", default=False,
+                       dest="version",
+                       help=u"Display version and author")
+    (opts, args) = parser.parse_args()
 
 # Output debugging info?
-if opts.debug == True:
-    print "opts", opts
-    print "\nargs", args
+    if opts.debug == True:
+        print "opts", opts
+        print "\nargs", args
 
 # Output version info & terminate?
-if opts.version == True:
-    sys.stdout.write("%s - %s (%s) by %s\n" %
-                     (__file__, __title__, __version__, __author__ ))
-    sys.exit(0)
+    if opts.version == True:
+        sys.stdout.write("%s - %s (%s) by %s\n" %
+                         (__file__, __title__, __version__, __author__ ))
+        sys.exit(0)
 
 # Output usage info & terminate?
-if opts.usage == True:
-    sys.stdout.write(usage_description)
-    parser.print_usage()
-    sys.stdout.write(usage_examples)
-    sys.exit(0)
+    if opts.usage == True:
+        sys.stdout.write(usage_description)
+        parser.print_usage()
+        sys.stdout.write(usage_examples)
+        sys.exit(0)
 
 # Check for required argument
-if len(args) != 1:
-    sys.stderr.write("%s: Must supply exactly one argument!\n" % ( __file__))
-    sys.exit(1)
+    if len(args) != 1:
+        parser.error("Must supply exactly one argument!")
+        sys.exit(1)
 
 # Connect to database
-tvdb = Tvdb(interactive=opts.interactive, cache=True)
+    tvdb = Tvdb(interactive=opts.interactive, cache=True)
 
 # Process query
-seriesname = args[0]
-show = tvdb[seriesname]
-print show['seriesname'] + ":"
-for key in show.data.keys():
-    if key != 'seriesname':
-        print "\t" + key + ": ",
-	print show[key]
+    seriesname = args[0]
+    show = tvdb[seriesname]
+    print show['seriesname'] + ":"
+    for key in show.data.keys():
+        if key != 'seriesname':
+            print "\t" + key + ": ",
+	    print show[key]
+    sys.exit(0)
+#end main
 
+if __name__ == "__main__":
+    main()
