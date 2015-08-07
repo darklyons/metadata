@@ -28,8 +28,9 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.1"
+__version__ = "0.1.1"
 # Version 0.1	Initial development skeleton
+# Version 0.1.1	Basic metadata processing with no actual estimating
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -45,6 +46,31 @@ Command examples:
 import sys
 from optparse import OptionParser
 
+
+def ParseMeta(filename):
+    '''Extract metadata date information from the file.'''
+    file = open(filename, 'r')
+    # Build metadata object
+    info = {}
+    for line in file:
+	line = line.replace('\n', '')
+        record = line.split(':')
+        (value, tag) = (record[0], record[1])
+        info[tag] = value
+    file.close
+    return info
+
+
+def Estimate(meta):
+    '''Estimate any missing AU broadcast data.'''
+    for key in meta:
+	info = meta[key]
+        if 'AU' not in info:
+            info['AU'] = info['broadcast']
+    return meta
+
+
+# Main program
 def main():
 # Process arguments
     parser = OptionParser(usage=u"%prog -dhuv <metadata-filenames>]")
@@ -82,8 +108,20 @@ def main():
         parser.error("Must supply at least one metadata file name!")
         sys.exit(1)
 
-# Process query
-    print args
+# Process file info
+    meta = {}
+    for filename in args:
+        info = ParseMeta(filename)
+	meta[filename] = info
+
+# Estimate missing info
+    meta = Estimate(meta)
+
+# Output info
+    for filename in meta:
+        print filename + ':',
+        print meta[filename]['AU']
+
 # Finished
     sys.exit(0)
 #end main
