@@ -5,11 +5,13 @@
 # SYNTAX
 #	shown <episode-metadata-files>
 # DESCRIPTION
-#	Displays the AU broadcast date for tv show metadata files given.
+#	Displays the local broadcast date for tv show metadata files given.
 #	It estimates missing information from the supplied corpus of data.
 # OPTIONS
 #	-d, --debug		Show debugging info.
 #	-h, --help		Display help message.
+#	-t TARGET, --target=TARGET
+#				Code for locality to display (default: AU).
 #	-u, --usage		Display examples for executing the shown script.
 #	-v, --version		Display version and author.
 # AUTHOR
@@ -28,9 +30,10 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
+# Version 0.1.2	Make source and target of the estimating variable
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -39,7 +42,7 @@ This script displays TV Show Broadcast Dates using data from the supplied files.
 usage_examples = '''
 Command examples:
 > shown /images/media/Doctor\ Who/Season\ 198*/.*.meta
-> shown /images/media/*/Season\ 1987.*/.*.meta
+> shown -t AU /images/media/*/Season\ 1987.*/.*.meta
 '''
 
 # System modules
@@ -61,22 +64,28 @@ def ParseMeta(filename):
     return info
 
 
-def Estimate(meta):
+def Estimate(source, target, meta):
     '''Estimate any missing AU broadcast data.'''
     for key in meta:
 	info = meta[key]
-        if 'AU' not in info:
-            info['AU'] = info['broadcast']
+        if target not in info:
+            info[target] = info[source]
     return meta
 
 
 # Main program
 def main():
+# Init globals
+    SOURCE = 'broadcast'
+
 # Process arguments
-    parser = OptionParser(usage=u"%prog -dhuv <metadata-filenames>]")
+    parser = OptionParser(usage=u"%prog -dhtuv <metadata-filenames>]")
     parser.add_option( "-d", "--debug", action="store_true", default=False,
                        dest="debug",
                        help=u"Show debugging info")
+    parser.add_option( "-t", "--target", metavar="TARGET", default='AU',
+                       dest="target",
+                       help=u"Target locality code for estimating")
     parser.add_option( "-u", "--usage", action="store_true", default=False,
                        dest="usage",
                        help=u"Display examples for executing the shown script")
@@ -115,12 +124,12 @@ def main():
 	meta[filename] = info
 
 # Estimate missing info
-    meta = Estimate(meta)
+    meta = Estimate(SOURCE, opts.target, meta)
 
 # Output info
     for filename in meta:
         print filename + ':',
-        print meta[filename]['AU']
+        print meta[filename][opts.target]
 
 # Finished
     sys.exit(0)
