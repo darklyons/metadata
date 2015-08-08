@@ -30,7 +30,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -38,6 +38,7 @@ __version__ = "0.2.0"
 # Version 0.1.4	Handle missing and malformed metadata edge cases
 # Version 0.1.5	Extend the depth of the date parsing for the input metadata
 # Version 0.2.0	Start using the system date routines in preparation for estimating
+# Version 0.2.1	Calculate and use average time deltas using the metadata tree
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -103,14 +104,75 @@ def ParseMeta(filename):
 
 
 def InitDelta(source, target, meta):
-    '''Create an empty tree structure for later use in estimating dates from file metadata.'''
+    '''Create a tree structure of all the date deltas from the file metadata.'''
     tree = {}
+    for key in meta:
+        info = meta[key]
+        if source in info and target in info:
+            delta = info[target] - info[source]
+        # Get path elements and remove null root element
+            path = key.split('/')
+            if len(path[0]) == 0:
+                path.pop(0)
+        # Unwind the path to create the tree
+            node = tree
+            leaf = path.pop()
+            for element in path:
+                if element not in node:
+                    node[element] = {}
+                node = node[element]
+        # Now at the tip of the tree
+            node[leaf] = delta
     return tree
 
 
-def CalcDelta(source, target, tree):
-    '''Estimate a zero date delta from the tree.'''
-    delta = timedelta(0)
+def SumLeaves(tree):
+    '''Calculate the sum and count for all leaf values of the tree.'''
+    sum  = timedelta(0)
+    count = 0
+    for key in tree:
+        if isinstance(tree[key], dict):
+            (treesum, treecount) = SumLeaves(tree[key])
+            sum   += treesum
+            count += treecount
+        else:
+            sum   += tree[key]
+            count += 1
+    return (sum, count)
+
+
+def Average(path, tree):
+    '''Calculate the average of the leaves at the deepest extent of the path
+       that has values to be averaged.
+    '''
+# Start backup up if we reach the tip of the tree
+# - by getting to the end of the path
+    if len(path) == 0:
+        return None
+# - or running out of tree
+    element = path.pop(0)
+    if element not in tree:
+        return None
+# Otherwise descend the tree
+    average = Average(path, tree[element])
+# And calc an average if necessary
+    if average is None:
+        (sum, count) = SumLeaves(tree)
+        if count > 0:
+        # - and possible
+            average = sum / count
+    return average
+
+
+def CalcDelta(key, tree):
+    '''Estimate a date delta by comparing dates in the filename tree.'''
+# Get path elements and remove null root element
+    path = key.split('/')
+    if len(path[0]) == 0:
+        path.pop(0)
+# Start the averaging one level up
+    path.pop()
+    delta = Average(path, tree)
     return delta
 
 
@@ -120,7 +182,7 @@ def Estimate(source, target, meta):
     for key in meta:
 	info = meta[key]
         if target not in info:
-            delta = CalcDelta(source, target, tree)
+            delta = CalcDelta(key, tree)
             estimate = info.get(source, None)
             if estimate is not None:
                 estimate += delta
