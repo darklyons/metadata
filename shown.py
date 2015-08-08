@@ -30,13 +30,14 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.1.5"
+__version__ = "0.2.0"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
 # Version 0.1.3	Introduce perfunctory date parsing on the input metadata
 # Version 0.1.4	Handle missing and malformed metadata edge cases
 # Version 0.1.5	Extend the depth of the date parsing for the input metadata
+# Version 0.2.0	Start using the system date routines in preparation for estimating
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -50,6 +51,7 @@ Command examples:
 
 # System modules
 import sys
+from datetime import date
 from optparse import OptionParser
 
 
@@ -77,7 +79,12 @@ def ParseDate(value):
             day   = '15'
         else:
             day   = match
-    return year + '-' + month + '-' + day
+    try:
+        match = date(int(year), int(month), int(day))
+    except:
+        print value+'='+parts
+        match = None
+    return match
 
 
 def ParseMeta(filename):
