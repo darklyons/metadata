@@ -30,12 +30,13 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
 # Version 0.1.3	Introduce perfunctory date parsing on the input metadata
 # Version 0.1.4	Handle missing and malformed metadata edge cases
+# Version 0.1.5	Extend the depth of the date parsing for the input metadata
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -54,6 +55,9 @@ from optparse import OptionParser
 
 def ParseDate(value):
     '''Extract a legitimate date from the generalized date string.'''
+# Init missing parts lookup
+    monthdict = {'0?': '05', '1?': '11'}
+    daydict   = {'??': '15', '0?': '05', '1?': '15', '2?': '25', '3?': '30'}
 # Get three parts of the date
     parts = value.split('-')
     while len(parts) < 3:
@@ -61,10 +65,18 @@ def ParseDate(value):
     [year, month, day] = parts
 # Handle missing parts
     if not month.isdigit():
-        month = '06'
-        day   = '30'
-    elif not day.isdigit():
-        day   = '15'
+        match = monthdict.get(month, None)
+        if match is None:
+            month = '06'
+            day   = '30'
+        else:
+            month = match
+    if not day.isdigit():
+        match = daydict.get(day, None)
+        if match is None:
+            day   = '15'
+        else:
+            day   = match
     return year + '-' + month + '-' + day
 
 
