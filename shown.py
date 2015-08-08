@@ -30,10 +30,11 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
+# Version 0.1.3	Introduce perfunctory date parsing on the input metadata
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -50,6 +51,22 @@ import sys
 from optparse import OptionParser
 
 
+def ParseDate(value):
+    '''Extract a legitimate date from the generalized date string.'''
+# Get three parts of the date
+    parts = value.split('-')
+    while len(parts) < 3:
+        parts.append('')
+    [year, month, day] = parts
+# Handle missing parts
+    if not month.isdigit():
+        month = '06'
+        day   = '30'
+    elif not day.isdigit():
+        day   = '15'
+    return year + '-' + month + '-' + day
+
+
 def ParseMeta(filename):
     '''Extract metadata date information from the file.'''
     file = open(filename, 'r')
@@ -59,7 +76,7 @@ def ParseMeta(filename):
 	line = line.replace('\n', '')
         record = line.split(':')
         (value, tag) = (record[0], record[1])
-        info[tag] = value
+        info[tag] = ParseDate(value)
     file.close
     return info
 
