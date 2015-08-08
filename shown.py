@@ -51,7 +51,7 @@ Command examples:
 
 # System modules
 import sys
-from datetime import date
+from datetime import date, timedelta
 from optparse import OptionParser
 
 
@@ -102,12 +102,29 @@ def ParseMeta(filename):
     return info
 
 
+def InitDelta(source, target, meta):
+    '''Create an empty tree structure for later use in estimating dates from file metadata.'''
+    tree = {}
+    return tree
+
+
+def CalcDelta(source, target, tree):
+    '''Estimate a zero date delta from the tree.'''
+    delta = timedelta(0)
+    return delta
+
+
 def Estimate(source, target, meta):
-    '''Estimate any missing AU broadcast data.'''
+    '''Estimate any missing target broadcast data.'''
+    tree = InitDelta(source, target, meta)
     for key in meta:
 	info = meta[key]
         if target not in info:
-            info[target] = info.get(source, None)
+            delta = CalcDelta(source, target, tree)
+            estimate = info.get(source, None)
+            if estimate is not None:
+                estimate += delta
+            info[target] = estimate
     return meta
 
 
