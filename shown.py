@@ -30,7 +30,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -38,7 +38,7 @@ __version__ = "0.2.1"
 # Version 0.1.4	Handle missing and malformed metadata edge cases
 # Version 0.1.5	Extend the depth of the date parsing for the input metadata
 # Version 0.2.0	Start using the system date routines in preparation for estimating
-# Version 0.2.1	Calculate and use average time deltas using the metadata tree
+# Version 0.2.2	Report the delta when debugging used as well as the estimate
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -187,6 +187,7 @@ def Estimate(source, target, meta):
             if estimate is not None:
                 estimate += delta
             info[target] = estimate
+	    info['DELTA'] = delta
     return meta
 
 
@@ -245,8 +246,11 @@ def main():
 
 # Output info
     for filename in meta:
-        print filename + ':',
-        print meta[filename][opts.target]
+        if opts.debug != True:
+            print "%s:%s" % (filename, meta[filename][opts.target])
+        else: 
+            print "%s:%s" % (filename, meta[filename][opts.target]),
+            print meta[filename].get('DELTA', None)
 
 # Finished
     sys.exit(0)
