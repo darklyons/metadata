@@ -30,7 +30,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -38,7 +38,9 @@ __version__ = "0.2.2"
 # Version 0.1.4	Handle missing and malformed metadata edge cases
 # Version 0.1.5	Extend the depth of the date parsing for the input metadata
 # Version 0.2.0	Start using the system date routines in preparation for estimating
+# Version 0.2.1	Calculate and use average time deltas using the metadata tree
 # Version 0.2.2	Report the delta when debugging used as well as the estimate
+# Version 0.2.3	Fix missing/erroneous documentation
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -197,7 +199,7 @@ def main():
     SOURCE = 'broadcast'
 
 # Process arguments
-    parser = OptionParser(usage=u"%prog -dhtuv <metadata-filenames>]")
+    parser = OptionParser(usage=u"%prog -dhuv [-t <target>] <metadata-filenames>]")
     parser.add_option( "-d", "--debug", action="store_true", default=False,
                        dest="debug",
                        help=u"Show debugging info")
