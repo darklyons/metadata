@@ -30,7 +30,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -41,6 +41,7 @@ __version__ = "0.2.3"
 # Version 0.2.1	Calculate and use average time deltas using the metadata tree
 # Version 0.2.2	Report the delta when debugging used as well as the estimate
 # Version 0.2.3	Fix missing/erroneous documentation
+# Version 0.2.4	Extend the cases handled by the metadata parsing
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -96,10 +97,13 @@ def ParseMeta(filename):
     # Build metadata object
     info = {}
     for line in file:
-	line = line.replace('\n', '')
+	line = line.rstrip()
         record = line.split(':')
 	if len(record) > 1:
-            (value, tag) = (record[0], record[1])
+            if record[0].isalpha() or not record[1].isalpha():
+                (tag, value) = (record[0], record[1])
+            else:
+                (value, tag) = (record[0], record[1])
             info[tag] = ParseDate(value)
     file.close
     return info
