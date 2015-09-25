@@ -7,10 +7,14 @@
 # DESCRIPTION
 #	Displays the local broadcast date for tv show metadata files given.
 #	For directories, it processes all '.meta' files in the hierarchy.
-#	It estimates missing information from the supplied corpus of data.
+#	It estimates missing information from the supplied corpus of data,
+#	using differences calculated from files with both source & target data.
+#	By default it estimates AU date based upon generic broadcast date.
 # OPTIONS
 #	-d, --debug		Show debugging info.
 #	-h, --help		Display help message.
+#	-s SOURCE, --source=SOURCE
+#				Code to use as base (default: broadcast).
 #	-t TARGET, --target=TARGET
 #				Code for locality to display (default: AU).
 #	-u, --usage		Display examples for executing the shown script.
@@ -31,7 +35,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.5"
+__version__ = "0.2.6"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -44,6 +48,7 @@ __version__ = "0.2.5"
 # Version 0.2.3	Fix missing/erroneous documentation
 # Version 0.2.4	Extend the cases handled by the metadata parsing
 # Version 0.2.5	Process whole directory hierarchies if needed & some clean up
+# Version 0.2.6	Allow use of different source (other than generic broadcast)
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -210,6 +215,9 @@ def main():
     parser.add_option( "-d", "--debug", action="store_true", default=False,
                        dest="debug",
                        help=u"Show debugging info")
+    parser.add_option( "-s", "--source", metavar="SOURCE", default='broadcast',
+                       dest="source",
+                       help=u"Source locality code for estimating")
     parser.add_option( "-t", "--target", metavar="TARGET", default='AU',
                        dest="target",
                        help=u"Target locality code for estimating")
@@ -263,7 +271,7 @@ def main():
         meta[filename] = info
 
 # Estimate missing info
-    meta = Estimate(SOURCE, opts.target, meta)
+    meta = Estimate(opts.source, opts.target, meta)
 
 # Output info
     for filename in meta:
