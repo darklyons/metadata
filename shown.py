@@ -244,7 +244,7 @@ def main():
 # Create file list
     meta = {}
     for path in args:
-    
+        meta[path] = {}
 
 # Extract file info
     for filename in meta:
