@@ -257,7 +257,7 @@ def main():
 # Extract file info
     for filename in meta:
         if opts.debug == True:
-            print filename
+            sys.stderr.write(filename+'\n')
         info = ParseMeta(filename)
         meta[filename] = info
 
