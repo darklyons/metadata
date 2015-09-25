@@ -97,9 +97,9 @@ def ParseMeta(filename):
     # Build metadata object
     info = {}
     for line in file:
-	line = line.rstrip()
+        line = line.rstrip()
         record = line.split(':')
-	if len(record) > 1:
+        if len(record) > 1:
             if record[0].isalpha() or not record[1].isalpha():
                 (tag, value) = (record[0], record[1])
             else:
@@ -186,14 +186,14 @@ def Estimate(source, target, meta):
     '''Estimate any missing target broadcast data.'''
     tree = InitDelta(source, target, meta)
     for key in meta:
-	info = meta[key]
+        info = meta[key]
         if target not in info:
             delta = CalcDelta(key, tree)
             estimate = info.get(source, None)
             if estimate is not None:
                 estimate += delta
             info[target] = estimate
-	    info['DELTA'] = delta
+            info['DELTA'] = delta
     return meta
 
 
@@ -244,12 +244,12 @@ def main():
 # Create file list
     meta = {}
     for path in args:
-	meta[path] = {}
+    
 
 # Extract file info
     for filename in meta:
         info = ParseMeta(filename)
-	meta[filename] = info
+        meta[filename] = info
 
 # Estimate missing info
     meta = Estimate(SOURCE, opts.target, meta)
