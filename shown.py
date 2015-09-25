@@ -3,9 +3,10 @@
 # NAME
 #	shown - display AU broadcast date for tv shows
 # SYNTAX
-#	shown <episode-metadata-files>
+#	shown <episode-metadata-paths...>
 # DESCRIPTION
 #	Displays the local broadcast date for tv show metadata files given.
+#	For directories, it processes all '.meta' files in the hierarchy.
 #	It estimates missing information from the supplied corpus of data.
 # OPTIONS
 #	-d, --debug		Show debugging info.
@@ -54,6 +55,7 @@ Command examples:
 '''
 
 # System modules
+import os
 import sys
 from datetime import date, timedelta
 from optparse import OptionParser
@@ -244,10 +246,18 @@ def main():
 # Create file list
     meta = {}
     for path in args:
-        meta[path] = {}
+        if not os.path.isdir(path):
+            meta[path] = {}
+        else:
+            for dirpath, dirs, files in os.walk(path):
+                for name in files:
+                    if name.endswith('.meta'):
+                        meta[os.path.join(dirpath, name)] = {}
 
 # Extract file info
     for filename in meta:
+        if opts.debug == True:
+            print filename
         info = ParseMeta(filename)
         meta[filename] = info
 
