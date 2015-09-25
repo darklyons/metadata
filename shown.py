@@ -31,7 +31,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -43,6 +43,7 @@ __version__ = "0.2.4"
 # Version 0.2.2	Report the delta when debugging used as well as the estimate
 # Version 0.2.3	Fix missing/erroneous documentation
 # Version 0.2.4	Extend the cases handled by the metadata parsing
+# Version 0.2.5	Process whole directory hierarchies if needed & some clean up
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
