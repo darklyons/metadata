@@ -241,9 +241,13 @@ def main():
         parser.error("Must supply at least one metadata file name!")
         sys.exit(1)
 
-# Process file info
+# Create file list
     meta = {}
-    for filename in args:
+    for path in args:
+	meta[path] = {}
+
+# Extract file info
+    for filename in meta:
         info = ParseMeta(filename)
 	meta[filename] = info
 
