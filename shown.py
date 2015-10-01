@@ -171,7 +171,7 @@ def Average(path, tree):
     average = Average(path, tree[element])
 # And calc an average if necessary
     if average is None:
-        (sum, count) = SumLeaves(tree)
+        (sum, count) = SumLeaves(tree[element])
         if count > 0:
         # - and possible
             average = sum / count
