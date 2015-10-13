@@ -35,7 +35,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.6"
+__version__ = "0.2.7"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -49,6 +49,7 @@ __version__ = "0.2.6"
 # Version 0.2.4	Extend the cases handled by the metadata parsing
 # Version 0.2.5	Process whole directory hierarchies if needed & some clean up
 # Version 0.2.6	Allow use of different source (other than generic broadcast)
+# Version 0.2.7	Extend metadata format to specialize tags (ie: "broadcast|US")
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -114,11 +115,17 @@ def ParseMeta(filename):
             elif record[1].isalpha():
                 taglist = [record[1]]
                 value = ParseDate(record[0])
+            elif record[0].find('|') >= 0:
+                taglist = record[0].split('|')
+                value = ParseDate(record[1])
             else:
-                sys.stderr.write('Bad tag line "'+line+'" in '+filename+'\n')
-                taglist = []
+                taglist = record[1].split('|')
+                value = ParseDate(record[0])
             for tag in taglist:
-                info[tag] = value
+                if tag.isalpha():
+                    info[tag] = value
+                else:
+                    sys.stderr.write('Bad tag "'+tag+'" in '+filename+'\n')
     file.close
     return info
 
