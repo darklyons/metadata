@@ -109,18 +109,18 @@ def ParseMeta(filename):
         line = line.rstrip()
         record = line.split(':')
         if len(record) > 1:
+            pos = 0
             if record[0].isalpha():
                 taglist = [record[0]]
-                value = ParseDate(record[1])
+                pos = 1
             elif record[1].isalpha():
                 taglist = [record[1]]
-                value = ParseDate(record[0])
             elif record[0].find('|') >= 0:
                 taglist = record[0].split('|')
-                value = ParseDate(record[1])
+                pos = 1
             else:
                 taglist = record[1].split('|')
-                value = ParseDate(record[0])
+            value = ParseDate(record[pos])
             for tag in taglist:
                 if tag.isalpha():
                     info[tag] = value
