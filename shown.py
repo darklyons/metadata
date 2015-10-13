@@ -108,11 +108,17 @@ def ParseMeta(filename):
         line = line.rstrip()
         record = line.split(':')
         if len(record) > 1:
-            if record[0].isalpha() or not record[1].isalpha():
-                (tag, value) = (record[0], record[1])
+            if record[0].isalpha():
+                taglist = [record[0]]
+                value = ParseDate(record[1])
+            elif record[1].isalpha():
+                taglist = [record[1]]
+                value = ParseDate(record[0])
             else:
-                (value, tag) = (record[0], record[1])
-            info[tag] = ParseDate(value)
+                sys.stderr.write('Bad tag line "'+line+'" in '+filename+'\n')
+                taglist = []
+            for tag in taglist:
+                info[tag] = value
     file.close
     return info
 
