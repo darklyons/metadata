@@ -35,7 +35,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.7"
+__version__ = "0.2.8"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -50,6 +50,7 @@ __version__ = "0.2.7"
 # Version 0.2.5	Process whole directory hierarchies if needed & some clean up
 # Version 0.2.6	Allow use of different source (other than generic broadcast)
 # Version 0.2.7	Extend metadata format to specialize tags (ie: "broadcast|US")
+# Version 0.2.8	Buglet in except clause for ParseDate
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -95,7 +96,7 @@ def ParseDate(value):
     try:
         match = date(int(year), int(month), int(day))
     except:
-        print value+'='+parts
+        print value+'='+str(parts)
         match = None
     return match
 
