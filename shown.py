@@ -35,7 +35,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.2.9"
+__version__ = "0.3.0"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -51,7 +51,8 @@ __version__ = "0.2.9"
 # Version 0.2.6	Allow use of different source (other than generic broadcast)
 # Version 0.2.7	Extend metadata format to specialize tags (ie: "broadcast|US")
 # Version 0.2.8	Buglet in except clause for ParseDate
-# Versionf0.2.9	Handle an optional time when parsing dates
+# Version 0.2.9	Handle an optional time when parsing dates
+# Version 0.3.0	Prep to calculate an estimate if the target date is approximate
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -70,6 +71,10 @@ from datetime import date, timedelta
 from optparse import OptionParser
 
 
+class ExtDate(date):
+    ''' Wraps Date class to allow for extra attributes.'''
+
+
 def ParseDate(value):
     '''Extract a legitimate date from the generalized date string.'''
 # Init missing parts lookup
@@ -86,6 +91,7 @@ def ParseDate(value):
         (day, time) = (daytime[0], daytime[1])
         parts[-1:] = daytime
 # Handle missing parts
+    isEstimate = False
     if not month.isdigit():
         match = monthdict.get(month, None)
         if match is None:
@@ -93,14 +99,17 @@ def ParseDate(value):
             day   = '30'
         else:
             month = match
+        isEstimate = True
     if not day.isdigit():
         match = daydict.get(day, None)
         if match is None:
             day   = '15'
         else:
             day   = match
+        isEstimate = True
     try:
-        match = date(int(year), int(month), int(day))
+        match = ExtDate(int(year), int(month), int(day))
+	match.isEstimate = isEstimate
     except:
         print value+'='+str(parts)
         match = None
