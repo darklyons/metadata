@@ -35,7 +35,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -53,6 +53,7 @@ __version__ = "0.3.0"
 # Version 0.2.8	Buglet in except clause for ParseDate
 # Version 0.2.9	Handle an optional time when parsing dates
 # Version 0.3.0	Prep to calculate an estimate if the target date is approximate
+# Version 0.3.1	Continue prep by saving the estimate as a separate attribute
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -109,7 +110,7 @@ def ParseDate(value):
         isEstimate = True
     try:
         match = ExtDate(int(year), int(month), int(day))
-	match.isEstimate = isEstimate
+        match.isEstimate = isEstimate
     except:
         print value+'='+str(parts)
         match = None
@@ -229,8 +230,10 @@ def Estimate(source, target, meta):
             estimate = info.get(source, None)
             if estimate is not None:
                 estimate += delta
-            info[target] = estimate
+            info['TARGET'] = estimate
             info['DELTA'] = delta
+        else:
+            info['TARGET'] = info[target]
     return meta
 
 
@@ -305,9 +308,9 @@ def main():
 # Output info
     for filename in meta:
         if opts.debug != True:
-            print "%s:%s" % (filename, meta[filename][opts.target])
+            print "%s:%s" % (filename, meta[filename]['TARGET'])
         else: 
-            print "%s:%s" % (filename, meta[filename][opts.target]),
+            print "%s:%s" % (filename, meta[filename]['TARGET']),
             print meta[filename].get('DELTA', None)
 
 # Finished
