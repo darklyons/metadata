@@ -13,6 +13,9 @@
 # OPTIONS
 #	-d, --debug		Show debugging info.
 #	-h, --help		Display help message.
+#	-M YYYY-MM-DD --metadate=YYYY-MM-DD
+#				maximum date allowed for '.meta' files,
+#				otherwise use backup versions (default: none).
 #	-s SOURCE, --source=SOURCE
 #				Code to use as base (default: broadcast).
 #	-t TARGET, --target=TARGET
@@ -35,7 +38,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.3.1"
+__version__ = "0.4.1"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -54,6 +57,7 @@ __version__ = "0.3.1"
 # Version 0.2.9	Handle an optional time when parsing dates
 # Version 0.3.0	Prep to calculate an estimate if the target date is approximate
 # Version 0.3.1	Continue prep by saving the estimate as a separate attribute
+# Version 0.4.1	Optionally filter metadata files by modification date
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -68,7 +72,7 @@ Command examples:
 # System modules
 import os
 import sys
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from optparse import OptionParser
 
 
@@ -243,10 +247,13 @@ def main():
     SOURCE = 'broadcast'
 
 # Process arguments
-    parser = OptionParser(usage=u"%prog -dhuv [-t <target>] <metadata-filenames>]")
+    parser = OptionParser(usage=u"%prog -dhuv [-M <metadate-limit>] [-t <target>] <metadata-filenames>]")
     parser.add_option( "-d", "--debug", action="store_true", default=False,
                        dest="debug",
                        help=u"Show debugging info")
+    parser.add_option( "-M", "--metadate", metavar="METADATE", default=False,
+                       dest="metadate",
+                       help=u"Maximum modify date for metadata files")
     parser.add_option( "-s", "--source", metavar="SOURCE", default='broadcast',
                        dest="source",
                        help=u"Source locality code for estimating")
@@ -284,6 +291,12 @@ def main():
         parser.error("Must supply at least one metadata file name!")
         sys.exit(1)
 
+# Convert metadate to a date?
+    if opts.metadate:
+        opts.metadate = ParseDate(opts.metadate)
+        if opts.metadate:
+            opts.metadate = datetime.combine(opts.metadate, datetime.min.time())
+
 # Create file list
     meta = {}
     for path in args:
@@ -291,9 +304,33 @@ def main():
             meta[path] = {}
         else:
             for dirpath, dirs, files in os.walk(path):
-                for name in files:
+                startname = False
+                for name in sorted(files):
+                    fullname = os.path.join(dirpath, name)
+                    mtime = os.path.getmtime(fullname)
+                    mdate = datetime.fromtimestamp(mtime)
                     if name.endswith('.meta'):
-                        meta[os.path.join(dirpath, name)] = {}
+                    # Normal case - check against metadate
+                        if startname:
+                        # Process fall thru
+                            startname = os.path.join(dirpath, startname)
+                            meta[startname] = {}
+                        if opts.metadate and mdate > opts.metadate:
+                        # Problem with normal - look for older version
+                            startname = name
+                        else:
+                        # Normal case is okay
+                            startname = False
+                            meta[fullname] = {}
+                    elif startname and name.startswith(startname):
+                    # Abnormal - stop when metadate checks out (or fall thru)
+                        if mdate <= opts.metadate:
+                            startname = False
+                            meta[fullname] = {}
+            # Process fall thru
+                if startname:
+                    startname = os.path.join(dirpath, startname)
+                    meta[startname] = {}
 
 # Extract file info
     for filename in meta:
