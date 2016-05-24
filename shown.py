@@ -38,7 +38,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -58,6 +58,7 @@ __version__ = "0.4.1"
 # Version 0.3.0	Prep to calculate an estimate if the target date is approximate
 # Version 0.3.1	Continue prep by saving the estimate as a separate attribute
 # Version 0.4.1	Optionally filter metadata files by modification date
+# Version 0.4.2	Modification date filtering should be able to eliminate an entry
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -311,10 +312,6 @@ def main():
                     mdate = datetime.fromtimestamp(mtime)
                     if name.endswith('.meta'):
                     # Normal case - check against metadate
-                        if startname:
-                        # Process fall thru
-                            startname = os.path.join(dirpath, startname)
-                            meta[startname] = {}
                         if opts.metadate and mdate > opts.metadate:
                         # Problem with normal - look for older version
                             startname = name
@@ -327,10 +324,6 @@ def main():
                         if mdate <= opts.metadate:
                             startname = False
                             meta[fullname] = {}
-            # Process fall thru
-                if startname:
-                    startname = os.path.join(dirpath, startname)
-                    meta[startname] = {}
 
 # Extract file info
     for filename in meta:
