@@ -13,7 +13,7 @@
 # OPTIONS
 #	-d, --debug		Show debugging info.
 #	-h, --help		Display help message.
-#	-M YYYY-MM-DD --metadate=YYYY-MM-DD
+#	-M YYYY-MM-DD, --metadate=YYYY-MM-DD
 #				maximum date allowed for '.meta' files,
 #				otherwise use backup versions (default: none).
 #	-s SOURCE, --source=SOURCE
