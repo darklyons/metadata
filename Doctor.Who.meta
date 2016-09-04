@@ -453,4 +453,4 @@ Doctor.Who.17x06.Shada.Part.5.avi.meta:1992-10-25 117 days, 21:36:00
 Doctor.Who.17x06.Shada.Part.6.avi.meta:1992-10-25 117 days, 21:36:00
 Doctor.Who.1996.The.Enemy.Within.avi.meta:1996-07-07 None
 Doctor.Who.11x02.Invasion.Of.The.Dinosaurs.Part.1.avi.meta:2004-09-15 None
-opts {'target': 'AU', 'debug': True, 'source': 'broadcast', 'version': False, 'usage': False, 'metadate': False}
+opts {'target': 'AU', 'usage': False, 'debug': True, 'source': 'broadcast', 'version': False, 'override': False, 'metadate': False}

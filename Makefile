@@ -8,7 +8,9 @@ DATA2=	/images/media/Doctor\ Who/Season\ 19*
 TEST2=	Doctor.Who.meta
 META2a= 2015-07-01
 TEST2a=	Doctor.Who-$(META2a).meta
-TESTS=	$(TEST2) $(TEST2a)
+OPTS2b= override
+TEST2b=	Doctor.Who-$(OPTS2b).meta
+TESTS=	$(TEST2) $(TEST2a) $(TEST2b)
 
 INSTALL=	/usr/bin/install
 OWNER=	peter
@@ -25,3 +27,4 @@ install:	$(SRCS)
 test:	$(SRC2)
 	python $(SRC2) -d $(DATA2)| sed 's?.*/.??' | sort -t : +1 | tee $(TEST2)
 	python $(SRC2) -M $(META2a) -d $(DATA2)| sed 's?.*/.??' | sort -t : +1 | tee $(TEST2a)
+	python $(SRC2) --$(OPTS2b) -d $(DATA2)| sed 's?.*/.??' | sort -t : +1 | tee $(TEST2b)

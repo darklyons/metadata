@@ -16,6 +16,7 @@
 #	-M YYYY-MM-DD, --metadate=YYYY-MM-DD
 #				maximum date allowed for '.meta' files,
 #				otherwise use backup versions (default: none).
+#	-o, --override		Override approximate dates with their estimate
 #	-s SOURCE, --source=SOURCE
 #				Code to use as base (default: broadcast).
 #	-t TARGET, --target=TARGET
@@ -30,6 +31,7 @@
 #	usage_examples		ending usage text - contains command examples
 #	opts		parsed options information
 #	opts.debug		print debugging info?
+#	opts.override		override approximate dates with an estimate?
 #	opts.usage		print usage info?
 #	opts.version		print version and author info?
 #
@@ -38,7 +40,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.4.2"
+__version__ = "0.5.0"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -59,6 +61,7 @@ __version__ = "0.4.2"
 # Version 0.3.1	Continue prep by saving the estimate as a separate attribute
 # Version 0.4.1	Optionally filter metadata files by modification date
 # Version 0.4.2	Modification date filtering should be able to eliminate an entry
+# Version 0.5.0	Allow override of approximate dates with estimate (first cut)
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -227,10 +230,18 @@ def CalcDelta(key, tree):
 
 def Estimate(source, target, meta):
     '''Estimate any missing target broadcast data.'''
+    global opts
     tree = InitDelta(source, target, meta)
     for key in meta:
         info = meta[key]
         if target not in info:
+            delta = CalcDelta(key, tree)
+            estimate = info.get(source, None)
+            if estimate is not None:
+                estimate += delta
+            info['TARGET'] = estimate
+            info['DELTA'] = delta
+        elif opts.override and info[target].isEstimate:
             delta = CalcDelta(key, tree)
             estimate = info.get(source, None)
             if estimate is not None:
@@ -245,16 +256,20 @@ def Estimate(source, target, meta):
 # Main program
 def main():
 # Init globals
+    global opts
     SOURCE = 'broadcast'
 
 # Process arguments
-    parser = OptionParser(usage=u"%prog -dhuv [-M <metadate-limit>] [-t <target>] <metadata-filenames>]")
+    parser = OptionParser(usage=u"%prog -dhouv [-M <metadate-limit>] [-t <target>] <metadata-filenames>]")
     parser.add_option( "-d", "--debug", action="store_true", default=False,
                        dest="debug",
                        help=u"Show debugging info")
     parser.add_option( "-M", "--metadate", metavar="METADATE", default=False,
                        dest="metadate",
                        help=u"Maximum modify date for metadata files")
+    parser.add_option( "-o", "--override", action="store_true", default=False,
+                       dest="override",
+                       help=u"Override approximate dates with an estimate")
     parser.add_option( "-s", "--source", metavar="SOURCE", default='broadcast',
                        dest="source",
                        help=u"Source locality code for estimating")
