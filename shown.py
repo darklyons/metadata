@@ -40,7 +40,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -62,6 +62,7 @@ __version__ = "0.5.0"
 # Version 0.4.1	Optionally filter metadata files by modification date
 # Version 0.4.2	Modification date filtering should be able to eliminate an entry
 # Version 0.5.0	Allow override of approximate dates with estimate (first cut)
+# Version 0.5.1	When overriding, only report on dates with values/estimates
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -345,7 +346,10 @@ def main():
         if opts.debug == True:
             sys.stderr.write(filename+'\n')
         info = ParseMeta(filename)
-        meta[filename] = info
+        if opts.override and opts.target not in info:
+            pass
+        else:
+            meta[filename] = info
 
 # Estimate missing info
     meta = Estimate(opts.source, opts.target, meta)

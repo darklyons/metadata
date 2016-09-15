@@ -354,7 +354,6 @@ Doctor.Who.21x02.The.Awakening.Part.2.avi.meta:1984-03-19 59 days, 14:46:09.2307
 Doctor.Who.21x03.Frontios.Part.1.avi.meta:1984-03-25 59 days, 14:46:09.230769
 Doctor.Who.21x03.Frontios.Part.3.avi.meta:1984-04-01 59 days, 14:46:09.230769
 Doctor.Who.21x03.Frontios.Part.4.avi.meta:1984-04-02 59 days, 14:46:09.230769
-Doctor.Who.21x04.Resurrection.Of.The.Daleks.Part.1+2.avi.meta:1984-04-07 59 days, 14:46:09.230769
 Doctor.Who.21x04.Resurrection.Of.The.Daleks.Part.1.avi.meta:1984-04-07 59 days, 14:46:09.230769
 Doctor.Who.21x04.Resurrection.Of.The.Daleks.Part.2.avi.meta:1984-04-07 59 days, 14:46:09.230769
 Doctor.Who.21x04.Resurrection.Of.The.Daleks.Part.3.avi.meta:1984-04-14 59 days, 14:46:09.230769
@@ -380,7 +379,6 @@ Doctor.Who.22x03.The.Mark.Of.The.Rani.Part.1.avi.meta:1985-12-15 316 days, 7:23:
 Doctor.Who.22x03.The.Mark.Of.The.Rani.Part.2.avi.meta:1985-12-22 316 days, 7:23:04.615384
 Doctor.Who.22x04.The.Two.Doctors.Part.1.avi.meta:1985-12-29 316 days, 7:23:04.615384
 Doctor.Who.22x04.The.Two.Doctors.Part.2.avi.meta:1986-01-05 316 days, 7:23:04.615384
-Doctor.Who.22xS1.A.Fix.with.Sontarans.avi.meta:1986-01-05 316 days, 7:23:04.615384
 Doctor.Who.22x04.The.Two.Doctors.Part.3.avi.meta:1986-01-12 316 days, 7:23:04.615384
 Doctor.Who.22x05.Timelash.Part.1.avi.meta:1986-01-19 316 days, 7:23:04.615384
 Doctor.Who.22x05.Timelash.Part.2.avi.meta:1986-01-26 316 days, 7:23:04.615384
@@ -446,11 +444,13 @@ Doctor.Who.26x03.The.Curse.of.Fenric.Part.4.avi.meta:1990-11-13 None
 Doctor.Who.26x04.Survival.Part.1.avi.meta:1990-11-14 None
 Doctor.Who.26x04.Survival.Part.2.avi.meta:1990-11-15 None
 Doctor.Who.26x04.Survival.Part.3.avi.meta:1990-11-16 None
-Doctor.Who.17x06.Shada.Part.1.avi.meta:1992-10-25 117 days, 21:36:00
-Doctor.Who.17x06.Shada.Part.2.avi.meta:1992-10-25 117 days, 21:36:00
-Doctor.Who.17x06.Shada.Part.3.avi.meta:1992-10-25 117 days, 21:36:00
-Doctor.Who.17x06.Shada.Part.4.avi.meta:1992-10-25 117 days, 21:36:00
-Doctor.Who.17x06.Shada.Part.5.avi.meta:1992-10-25 117 days, 21:36:00
-Doctor.Who.17x06.Shada.Part.6.avi.meta:1992-10-25 117 days, 21:36:00
 Doctor.Who.1996.The.Enemy.Within.avi.meta:1996-07-07 None
 opts {'target': 'AU', 'usage': False, 'debug': True, 'source': 'broadcast', 'version': False, 'override': True, 'metadate': False}
+Doctor.Who.17x06.Shada.Part.1.avi.meta:None 117 days, 21:36:00
+Doctor.Who.17x06.Shada.Part.2.avi.meta:None 117 days, 21:36:00
+Doctor.Who.17x06.Shada.Part.3.avi.meta:None 117 days, 21:36:00
+Doctor.Who.17x06.Shada.Part.4.avi.meta:None 117 days, 21:36:00
+Doctor.Who.17x06.Shada.Part.5.avi.meta:None 117 days, 21:36:00
+Doctor.Who.17x06.Shada.Part.6.avi.meta:None 117 days, 21:36:00
+Doctor.Who.22xS1.A.Fix.with.Sontarans.avi.meta:None 316 days, 7:23:04.615384
+Doctor.Who.21x04.Resurrection.Of.The.Daleks.Part.1+2.avi.meta:None 59 days, 14:46:09.230769
