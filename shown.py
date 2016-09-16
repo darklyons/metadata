@@ -40,7 +40,7 @@
 """Show TV episodes AU broadcast dates."""
 __title__ = "Broadcast Date Display Utility"
 __author__ = "darklion"
-__version__ = "0.5.1"
+__version__ = "0.5.2"
 # Version 0.1	Initial development skeleton
 # Version 0.1.1	Basic metadata processing with no actual estimating
 # Version 0.1.2	Make source and target of the estimating variable
@@ -63,6 +63,7 @@ __version__ = "0.5.1"
 # Version 0.4.2	Modification date filtering should be able to eliminate an entry
 # Version 0.5.0	Allow override of approximate dates with estimate (first cut)
 # Version 0.5.1	When overriding, only report on dates with values/estimates
+# Version 0.5.2	Bug fixes: find latest file when metadate set and handle bad tag values
 
 usage_description = '''
 This script displays TV Show Broadcast Dates using data from the supplied files.
@@ -148,8 +149,10 @@ def ParseMeta(filename):
                 taglist = record[1].split('|')
             value = ParseDate(record[pos])
             for tag in taglist:
-                if tag.isalpha():
+                if tag.isalpha() and value is not None:
                     info[tag] = value
+                elif tag.isalpha():
+                    sys.stderr.write('Bad value for tag "'+tag+'" in '+filename+'\n')
                 else:
                     sys.stderr.write('Bad tag "'+tag+'" in '+filename+'\n')
     file.close
@@ -321,6 +324,7 @@ def main():
             meta[path] = {}
         else:
             for dirpath, dirs, files in os.walk(path):
+                oldname = False
                 startname = False
                 for name in sorted(files):
                     fullname = os.path.join(dirpath, name)
@@ -328,6 +332,10 @@ def main():
                     mdate = datetime.fromtimestamp(mtime)
                     if name.endswith('.meta'):
                     # Normal case - check against metadate
+                        if oldname:
+                        # Finish off abnormal case handling
+                            meta[oldname] = {}
+                            oldname = False
                         if opts.metadate and mdate > opts.metadate:
                         # Problem with normal - look for older version
                             startname = name
@@ -338,8 +346,10 @@ def main():
                     elif startname and name.startswith(startname):
                     # Abnormal - stop when metadate checks out (or fall thru)
                         if mdate <= opts.metadate:
-                            startname = False
-                            meta[fullname] = {}
+                            oldname = fullname
+            # Finish outstanding abnormal case
+                if oldname:
+                    meta[oldname] = {}
 
 # Extract file info
     for filename in meta:
