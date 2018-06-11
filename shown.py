@@ -71,8 +71,8 @@ This script displays TV Show Broadcast Dates using data from the supplied files.
 '''
 usage_examples = '''
 Command examples:
-> shown /images/media/Doctor\ Who/Season\ 198*/.*.meta
-> shown -t AU /images/media/*/Season\ 1987.*/.*.meta
+> shown data/Season\ 198*/.*.meta
+> shown -t AU data/Season\ 1987.*/.*.meta
 '''
 
 # System modules
